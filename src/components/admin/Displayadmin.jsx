@@ -113,7 +113,6 @@ export default function Displayadmin({
           console.log(res.data.result);
           // 🔥 UI instant update
           setAdmins((prev) => prev.filter((admin) => admin._id !== adminId));
-
           toast.success("Admin deleted successfully ✅");
         })
         .catch((error) => {
@@ -203,12 +202,18 @@ export default function Displayadmin({
                   <td>
                     <div
                       className="action-menu-container"
-                      onMouseEnter={() => setActiveMenuId(admin._id)}
+                      onMouseEnter={() => setActiveMenuId(admin._id || i)}
                       onMouseLeave={() => setActiveMenuId(null)}
                     >
-                      <button className="btn-action-dots">•••</button>
+                      {/* Three dots hamesha visible rahenge */}
+                      <button className="btn-action-dots">
+                        <div className="dot"></div>
+                        <div className="dot"></div>
+                        <div className="dot"></div>
+                      </button>
 
-                      {activeMenuId === admin._id && (
+                      {/* Menu sirf hover karne par dikhega */}
+                      {activeMenuId === (admin._id || i) && (
                         <div className="action-dropdown-menu">
                           <button className="menu-item edit">Edit</button>
                           <button
@@ -308,7 +313,6 @@ export default function Displayadmin({
                   <p className="error">{errors.name}</p>
                 )}
               </div>
-
               {/* EMAIL */}
               <div>
                 <input
@@ -323,7 +327,6 @@ export default function Displayadmin({
                   <p className="error">{errors.email}</p>
                 )}
               </div>
-
               {/* MOBILE */}
               <div>
                 <input
@@ -340,7 +343,6 @@ export default function Displayadmin({
                   <p className="error">{errors.mobile}</p>
                 )}
               </div>
-
               {/* ROLE */}
               <div>
                 <select
@@ -358,7 +360,6 @@ export default function Displayadmin({
                   <p className="error">{errors.role}</p>
                 )}
               </div>
-
               {/* STATUS */}
               <div>
                 <select
@@ -373,13 +374,14 @@ export default function Displayadmin({
               </div>
 
               {/* ACTIONS */}
-              <div className="modal-actions">
+              <div className="modal-actions  form-actions">
                 <button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? "Creating..." : "Create"}
                 </button>
 
                 <button
                   type="button"
+                  className="cancel-btn"
                   onClick={() => setShowAddAdminModal(false)}
                 >
                   Cancel

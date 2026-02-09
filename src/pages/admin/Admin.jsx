@@ -50,6 +50,10 @@ export default function Admin() {
     fetchAdmins();
   }, []);
 
+  useEffect(() => {
+    setActiveMenuId(null);
+  }, [admins]);
+
   // 🔍 Search
   const adminArray = Array.isArray(admins) ? admins : [];
 

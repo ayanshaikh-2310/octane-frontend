@@ -1,7 +1,16 @@
 /** ===============================
     GYM ADMINS CRUD – FULL CSS
 ================================ */
-
+:root {
+  --primary: #22c55e;
+  --primary-dark: #16a34a;
+  --accent: #0ea5e9;
+  --bg-gradient: linear-gradient(135deg, #1e1b4b, #0ea5e9);
+  --card-bg: rgba(255, 255, 255, 0.75);
+  --border: rgba(15, 23, 42, 0.08);
+  --text-dark: #0f172a;
+  --text-muted: #64748b;
+}
 /* ===============================
    BREADCRUMB / ACTION BUTTONS
 ================================ */
@@ -251,15 +260,16 @@
 }
 
 .btn-action-dots .dot {
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
   background: var(--text-secondary);
   border-radius: 50%;
 }
 
 .action-dropdown-menu {
+   pointer-events: auto;
   position: absolute;
-  top: 0;
+  top: 50%;
   right: 28px;
   background: #ffffff;
   border: 1px solid var(--border-color);
@@ -270,7 +280,10 @@
   min-width: 100px;
   display: flex;
   gap: 5px;
+  transform: translateY(-50%);
+
 }
+
 
 .menu-item {
   padding: 6px 12px;
@@ -420,7 +433,7 @@
   max-width: 720px;
   padding: 36px 38px;
   border-radius: 22px;
-  background: var(--card-bg);
+  background: linear-gradient(135deg, #1e1b4b, #0ea5e9);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   box-shadow:
@@ -523,8 +536,9 @@
   border: none;
   color: #ffffff;
   cursor: pointer;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  box-shadow: 0 12px 28px rgba(34, 197, 94, 0.45);
+  background-color: #16a34a;
+  /* background: linear-gradient(135deg, #066c2b73, #16a34a); */
+  box-shadow: 0 12px 28px #22c55e73;
   transition: all 0.3s ease;
 }
 
@@ -533,6 +547,34 @@
 }
 
 .modal-actions button[type="button"] {
+   padding: 12px 26px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: transparent;
+  border: 1.5px dashed var(--border);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-actions button[type="button"]:hover{
+   color: #ffffff;
+  border-color: #ffffff;
+}
+
+/* ===============================
+   ERROR TEXT
+================================ */
+.error {
+  font-size: 0.9rem;
+  color: #ef4444;
+  margin-top: 5px;
+  margin-left: 10px;
+}
+
+/* Cancel */
+.form-actions .cancel-btn {
   padding: 12px 26px;
   border-radius: 999px;
   font-size: 0.9rem;
@@ -541,7 +583,23 @@
   border: 1.5px dashed var(--border);
   color: #ffffff;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
+
+.form-actions .cancel-btn:hover {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+/* .add-admin-page select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2364748b'%3E%3Cpath d='M5.25 7.5L10 12.25L14.75 7.5' stroke='%2364748b' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  cursor: pointer;
+} */
+
 
 /* ===============================
    ANIMATION
