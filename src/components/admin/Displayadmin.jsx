@@ -44,6 +44,7 @@ export default function Displayadmin({
   refreshAdmin,
 }) {
   const [initialValues, setIntialValues] = useState({
+    id: 0,
     name: "",
     email: "",
     mobile: "",
@@ -65,10 +66,15 @@ export default function Displayadmin({
   } = useFormik({
     initialValues: initialValues,
     validationSchema: adminSchema,
+    enableReinitialize: true,
     onSubmit: async (values, { setSubmitting }) => {
       console.log("All Fields set well", values);
       try {
-        await saveAdmin(values);
+        if (values.id == 0) {
+          await saveAdmin(values);
+        } else {
+          await updateAdmin(values);
+        }
       } finally {
         setSubmitting(false); // stops the Formik submission state
       }
@@ -98,7 +104,7 @@ export default function Displayadmin({
     }
   };
 
-  // ✅ -------------------DELETE ADMIN----------------------------------------------
+  //  -------------------DELETE ADMIN----------------------------------------------
   const handleDeleteAdmin = async (adminId) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this admin?",
@@ -112,7 +118,7 @@ export default function Displayadmin({
         .then((res) => {
           console.log(res.data.result);
           // 🔥 UI instant update
-          setAdmins((prev) => prev.filter((admin) => admin._id !== adminId));
+          setAdmins((prev) => prev.filter((admin) => admin.id !== adminId));
           toast.success("Admin deleted successfully ✅");
         })
         .catch((error) => {
@@ -120,6 +126,40 @@ export default function Displayadmin({
         });
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to delete admin ❌");
+    }
+  };
+
+  const getAdmin = (admin) => {
+    setIntialValues({
+      id: admin.id,
+      name: admin.name,
+      email: admin.email,
+      mobile: admin.mobile,
+      role: admin.role,
+      status: admin.status,
+    });
+  };
+
+  // This will open model will place the existingvalue
+  const handleOpenAdminModal = (values) => {
+    setShowAddAdminModal(true); // modal open
+    getAdmin(values); // admin data load / set
+  };
+
+  const updateAdmin = async (values) => {
+    try {
+      const res = await api.put(`/api/admin/update-admin/${values.id}`, values);
+
+      // 🔁 Update admin in list (replace, not add)
+      setAdmins((prev) =>
+        prev.map((admin) => (admin.id === values.id ? res.data.result : admin)),
+      );
+
+      toast.success("Admin updated successfully");
+      setShowAddAdminModal(false);
+      refreshAdmin(); // optional (agar backend se fresh data chahiye)
+    } catch (error) {
+      toast.error(error.response?.data?.result || "Failed to update admin");
     }
   };
 
@@ -189,7 +229,7 @@ export default function Displayadmin({
 
             <tbody>
               {admins.map((admin, i) => (
-                <tr key={admin._id || i}>
+                <tr key={admin.id || i}>
                   <td>{i + 1}</td>
                   <td>{admin.name}</td>
                   <td>{admin.email}</td>
@@ -202,7 +242,7 @@ export default function Displayadmin({
                   <td>
                     <div
                       className="action-menu-container"
-                      onMouseEnter={() => setActiveMenuId(admin._id || i)}
+                      onMouseEnter={() => setActiveMenuId(admin.id || i)}
                       onMouseLeave={() => setActiveMenuId(null)}
                     >
                       {/* Three dots hamesha visible rahenge */}
@@ -213,12 +253,17 @@ export default function Displayadmin({
                       </button>
 
                       {/* Menu sirf hover karne par dikhega */}
-                      {activeMenuId === (admin._id || i) && (
+                      {activeMenuId === (admin.id || i) && (
                         <div className="action-dropdown-menu">
-                          <button className="menu-item edit">Edit</button>
+                          <button
+                            className="menu-item edit"
+                            onClick={() => handleOpenAdminModal(admin)}
+                          >
+                            Edit
+                          </button>
                           <button
                             className="menu-item delete"
-                            onClick={() => handleDeleteAdmin(admin._id)}
+                            onClick={() => handleDeleteAdmin(admin.id)}
                           >
                             Delete
                           </button>
@@ -296,7 +341,7 @@ export default function Displayadmin({
       {showAddAdminModal && (
         <div className="modal-overlay">
           <div className="admin-modal-card">
-            <h3>Create Admin</h3>
+            <h3>{values.id === 0 ? "Create Admin" : "Edit Admin"}</h3>
 
             <form onSubmit={handleSubmit} className="admin-modal-form">
               {/* NAME */}
@@ -376,7 +421,13 @@ export default function Displayadmin({
               {/* ACTIONS */}
               <div className="modal-actions  form-actions">
                 <button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Creating..." : "Create"}
+                  {isSubmitting
+                    ? values.id === 0
+                      ? "Creating..."
+                      : "Updating..."
+                    : values.id === 0
+                      ? "Create"
+                      : "Update"}
                 </button>
 
                 <button
